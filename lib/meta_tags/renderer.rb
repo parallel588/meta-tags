@@ -147,7 +147,7 @@ module MetaTags
     # @param [Array<Tag>] tags a buffer object to store tag in.
     #
     def render_links(tags)
-      [ :canonical, :prev, :next, :author, :publisher ].each do |tag_name|
+      MetaTags.config.link_tags.each do |tag_name|
         href = meta_tags.extract(tag_name)
         if href.present?
           @normalized_meta_tags[tag_name] = href
@@ -163,7 +163,15 @@ module MetaTags
     def render_hashes(tags, options = {})
       meta_tags.meta_tags.each do |property, data|
         if data.is_a?(Hash)
-          process_hash(tags, property, data, options)
+          if data['name_key']
+            render_tag(
+              tags, property, data['content'],
+              name_key: data['name_key'].to_sym
+            )
+          else
+            process_hash(tags, property, data, options)
+          end
+
           meta_tags.extract(property)
         end
       end

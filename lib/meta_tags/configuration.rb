@@ -10,12 +10,16 @@ module MetaTags
     # Keywords separator - a string to join keywords with.
     attr_accessor :keywords_separator
 
+    # Link tags name
+    attr_accessor :link_tags
+
     # Initializes a new instance of Configuration class.
     def initialize
       @title_limit = 70
       @description_limit = 160
       @keywords_limit = 255
       @keywords_separator = ', '
+      @link_tags = [ :canonical, :prev, :next, :author, :publisher ]
     end
   end
 end
