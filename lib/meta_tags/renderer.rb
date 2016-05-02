@@ -163,15 +163,7 @@ module MetaTags
     def render_hashes(tags, options = {})
       meta_tags.meta_tags.each do |property, data|
         if data.is_a?(Hash)
-          if data['name_key']
-            render_tag(
-              tags, property, data['content'],
-              name_key: data['name_key'].to_sym
-            )
-          else
-            process_hash(tags, property, data, options)
-          end
-
+          process_hash(tags, property, data, options)
           meta_tags.extract(property)
         end
       end
@@ -228,10 +220,17 @@ module MetaTags
     # @param [Hash] content nested meta tag attributes.
     #
     def process_hash(tags, property, content, options = {})
-      content.each do |key, value|
-        key = key.to_s == '_' ? property : "#{property}:#{key}"
-        value = normalized_meta_tags[value] if value.is_a?(Symbol)
-        process_tree(tags, key, value, options)
+      if content['name_key']
+        render_tag(
+          tags, property, content['content'],
+          name_key: content['name_key'].to_sym
+        )
+      else
+        content.each do |key, value|
+          key = key.to_s == '_' ? property : "#{property}:#{key}"
+          value = normalized_meta_tags[value] if value.is_a?(Symbol)
+          process_tree(tags, key, value, options)
+        end
       end
     end
 
